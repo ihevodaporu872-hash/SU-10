@@ -1,16 +1,22 @@
 # IMPORTANT — Server execution policy (Kazser)
 
-## DO NOT RUN on this server
-- Do NOT start any application servers or dev servers.
-- Do NOT run builds or tests.
-- Do NOT run: npm/yarn/pnpm install|dev|start|build|test, docker build, docker compose up.
-- This machine is for editing code and Git operations only.
+## Язык общения
+- Все ответы, комментарии и объяснения пиши на русском языке.
 
-## Allowed
+## Allowed (lightweight setup only)
 - Edit files
 - Search/replace
 - Format code
 - Git: status/diff/add/commit/push/pull
+- Python: create venv and install deps ONLY inside .venv
+  - allowed: python -m venv .venv, .venv\Scripts\pip install -r requirements.txt
+  - forbidden: global pip installs, running python apps/servers
+- Node: install deps ONLY (no running)
+  - allowed: npm ci (preferred) or npm install
+  - forbidden: npm run dev/start/build/test, any postinstall scripts that start services
+
+## Still forbidden on this server
+- Do NOT run applications, dev servers, builds, tests, docker compose up, heavy indexing, long-running processes.
 
 ## Workflow
 1) Make changes here (server).
