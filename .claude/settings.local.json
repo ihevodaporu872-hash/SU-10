@@ -6,7 +6,11 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Добавлен проект OSA Portal + модуль База знаний\n\n- Создана структура проекта Next.js 14 \\(App Router, TypeScript, Tailwind CSS\\)\n- Добавлен Layout с боковой навигацией \\(темная тема\\)\n- Модуль \"Анализ чертежей\": загрузка PDF, маркеры ошибок, фильтрация\n- Модуль \"База знаний\": API для чтения .md файлов, поиск, react-markdown\n- Структура data-source \\(raw-json, projects-md, checklists\\)\n- Примеры документации проектов Alpha, Beta и справочник СП\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(\"/c/Program Files/nodejs/npm.cmd\" install)"
+      "Bash(\"/c/Program Files/nodejs/npm.cmd\" install)",
+      "Bash(\"/c/Program Files/nodejs/npx.cmd\" tsc --noEmit)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/nodejs\")",
+      "Bash(npx tsc:*)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")"
     ]
   }
 }
