@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import {
   Check,
   AlertTriangle,
@@ -54,9 +54,8 @@ export function TenderTable({
         </thead>
         <tbody>
           {filteredRows.map((row) => (
-            <>
+            <Fragment key={row.id}>
               <tr
-                key={row.id}
                 className={cn(
                   "border-b border-border/50 transition-colors",
                   row.checked && "bg-green-500/10",
@@ -189,7 +188,7 @@ export function TenderTable({
                   </td>
                 </tr>
               )}
-            </>
+            </Fragment>
           ))}
         </tbody>
       </table>
