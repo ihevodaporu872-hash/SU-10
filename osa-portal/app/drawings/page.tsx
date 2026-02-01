@@ -14,6 +14,7 @@ import {
   type ErrorStatus,
   type Engineer,
 } from "@/types/drawings";
+import { sendCriticalNotification } from "@/lib/notifications";
 
 export default function DrawingsPage() {
   // Состояния файлов
@@ -76,6 +77,19 @@ export default function DrawingsPage() {
   // Изменение статуса ошибки
   const handleStatusChange = useCallback(
     (errorId: string, status: ErrorStatus) => {
+      const error = errors.find((e) => e.id === errorId);
+
+      // Отправляем уведомление при подтверждении критической ошибки
+      if (error && status === "confirmed" && error.severity === "Критическая") {
+        sendCriticalNotification({
+          type: "drawing",
+          workType: error.workType,
+          description: error.description,
+          engineers: [error.engineer],
+          severity: error.severity,
+        });
+      }
+
       setErrors((prev) =>
         prev.map((e) => (e.id === errorId ? { ...e, status } : e))
       );
@@ -83,7 +97,7 @@ export default function DrawingsPage() {
         prev?.id === errorId ? { ...prev, status } : prev
       );
     },
-    []
+    [errors]
   );
 
   // Переключение фильтра инженеров
