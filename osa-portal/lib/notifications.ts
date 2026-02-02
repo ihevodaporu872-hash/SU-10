@@ -1,7 +1,7 @@
 "use server";
 
 // Логика определения ответственного инженера по виду работ
-export function getResponsibleEngineer(workType: string): string {
+function getResponsibleEngineer(workType: string): string {
   const normalizedType = workType.toLowerCase();
 
   // Каменная кладка, Фасады → Инженер 2
