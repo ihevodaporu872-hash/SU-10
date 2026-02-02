@@ -29,7 +29,11 @@ export function PdfViewer({
   const [numPages, setNumPages] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [scale, setScale] = useState<number>(0.5);
-  const [pageSize, setPageSize] = useState<{ width: number; height: number } | null>(null);
+
+  // Оригинальный размер страницы (без масштаба)
+  const [originalPageSize, setOriginalPageSize] = useState<{ width: number; height: number } | null>(null);
+  const hasAutoFitted = useRef(false);
+  const currentFileRef = useRef<File | null>(null);
 
   // Для перетаскивания
   const [isDragging, setIsDragging] = useState(false);
@@ -39,20 +43,30 @@ export function PdfViewer({
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  // Сброс при смене файла
+  useEffect(() => {
+    if (file !== currentFileRef.current) {
+      currentFileRef.current = file;
+      hasAutoFitted.current = false;
+      setOriginalPageSize(null);
+      setScale(0.5);
+    }
+  }, [file]);
+
   // Подгонка под размер контейнера
   const fitToContainer = useCallback(() => {
-    if (!containerRef.current || !pageSize) return;
+    if (!containerRef.current || !originalPageSize) return;
 
     const container = containerRef.current;
     const containerWidth = container.clientWidth - 32; // padding
     const containerHeight = container.clientHeight - 32;
 
-    const scaleX = containerWidth / pageSize.width;
-    const scaleY = containerHeight / pageSize.height;
+    const scaleX = containerWidth / originalPageSize.width;
+    const scaleY = containerHeight / originalPageSize.height;
     const fitScale = Math.min(scaleX, scaleY, 1);
 
     setScale(Math.max(0.1, fitScale));
-  }, [pageSize]);
+  }, [originalPageSize]);
 
   const onDocumentLoadSuccess = useCallback(
     ({ numPages }: { numPages: number }) => {
@@ -64,17 +78,30 @@ export function PdfViewer({
 
   const onPageLoadSuccess = useCallback(
     ({ width, height }: { width: number; height: number }) => {
-      setPageSize({ width, height });
+      // Сохраняем оригинальный размер только при первой загрузке
+      if (!hasAutoFitted.current) {
+        setOriginalPageSize({ width, height });
+      }
     },
     []
   );
 
   // Авто-подгонка при первой загрузке страницы
   useEffect(() => {
-    if (pageSize && containerRef.current) {
-      fitToContainer();
+    if (originalPageSize && containerRef.current && !hasAutoFitted.current) {
+      hasAutoFitted.current = true;
+
+      const container = containerRef.current;
+      const containerWidth = container.clientWidth - 32;
+      const containerHeight = container.clientHeight - 32;
+
+      const scaleX = containerWidth / originalPageSize.width;
+      const scaleY = containerHeight / originalPageSize.height;
+      const fitScale = Math.min(scaleX, scaleY, 1);
+
+      setScale(Math.max(0.1, fitScale));
     }
-  }, [pageSize, fitToContainer]);
+  }, [originalPageSize]);
 
   // Ctrl + колесо мыши для зума
   useEffect(() => {
